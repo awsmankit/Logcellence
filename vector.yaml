@@ -1,0 +1,114 @@
+sources:
+  ddms_logs:
+    type: file
+    include:
+      - /home/ankit/centralised_logging/services/DDMS/logs/*.log
+    read_from: beginning
+    ignore_older_secs: 86400
+    fingerprinting:
+      strategy: checksum
+
+  dpms_logs:
+    type: file
+    include:
+      - /home/ankit/centralised_logging/services/DPMS/logs/*.log
+    read_from: beginning
+    ignore_older_secs: 86400
+    fingerprinting:
+      strategy: checksum
+
+  ocr_logs:
+    type: file
+    include:
+      - /home/ankit/centralised_logging/services/OCR/logs/*.log
+    read_from: beginning
+    ignore_older_secs: 86400
+    fingerprinting:
+      strategy: checksum
+
+  internal_metrics:
+    type: internal_metrics
+
+# ========== TRANSFORMS ==========
+
+transforms:
+  parse_ddms_logs:
+    type: remap
+    inputs:
+      - ddms_logs
+    source: |
+      structured, err = parse_json(.message)
+      if err == null {
+        . = merge!(., structured)
+        del(structured.service_name)
+      }
+
+  parse_dpms_logs:
+    type: remap
+    inputs:
+      - dpms_logs
+    source: |
+      structured, err = parse_json(.message)
+      if err == null {
+        . = merge!(., structured)
+        del(structured.service_name)
+      }
+
+  parse_ocr_logs:
+    type: remap
+    inputs:
+      - ocr_logs
+    source: |
+      structured, err = parse_json(.message)
+      if err == null {
+        . = merge!(., structured)
+        del(structured.service_name)
+      }
+
+
+# ========== SINKS ==========
+
+sinks:
+  loki_sink:
+    type: loki
+    inputs:
+      - parse_ddms_logs
+      - parse_dpms_logs
+      - parse_ocr_logs
+    endpoint: http://localhost:3100
+    encoding:
+      codec: json
+    labels:
+      service: "{{ service }}"
+      level: "{{ level }}"
+    remove_label_fields: true
+    acknowledgements: true
+    batch:
+      max_bytes: 1048576
+      timeout_secs: 5
+    request:
+      retries: 4294967295
+      retry_initial_backoff_secs: 5
+
+  dead_letter_sink:
+    type: file
+    inputs:
+      - parse_ddms_logs
+      - parse_dpms_logs
+      - parse_ocr_logs
+    path: /home/ankit/centralised_logging/vector_dead_letter.log
+    encoding:
+      codec: json
+
+  nats_sink:
+    type: nats
+    inputs:
+      - parse_ddms_logs
+      - parse_dpms_logs
+      - parse_ocr_logs
+    url: nats://localhost:4222
+    subject: logs.stream
+    encoding:
+      codec: json
+
+# ========== END OF CONFIG ==========
