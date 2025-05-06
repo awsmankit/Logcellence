@@ -25,6 +25,20 @@ CENTRALISED_LOGGING/
 └── README.md  ← You are here
 ```
 
+📁 Tool Downloads — Installation Folder
+📌 Always store and extract/install all third-party tool binaries (.deb, .zip, .tar.gz) inside the tools/ directory.
+This keeps the root project clean and makes tracking/upgrading tools easier.
+
+For example:
+
+bash
+Copy
+Edit
+cd tools/
+wget https://github.com/grafana/loki/releases/latest/download/loki-linux-amd64.zip
+unzip loki-linux-amd64.zip
+mv loki-linux-amd64 ../loki
+
 ---
 
 ## 🧰 Tech Stack Summary
