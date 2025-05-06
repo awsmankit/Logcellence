@@ -1,10 +1,3 @@
-# Logcellence
-Centralised logging system using Vector.dev, NATS, Loki and Gafana
-
-Here’s a polished `README.md` for your **on-premise centralized logging system** combining **Fluent Bit**, **Loki**, **Grafana**, **Vector**, **NATS**, and **FastAPI with Azure OpenAI** for GPT-based summarization.
-
----
-
 # 📘 Centralized Logging System (On-Prem) with GPT Summarization & Grafana Dashboards
 
 > Real-time, AI-enhanced observability stack using **Fluent Bit**, **Loki**, **Grafana**, **Vector**, **NATS**, **FastAPI**, and **Azure OpenAI**.
