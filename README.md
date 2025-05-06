@@ -8,11 +8,6 @@
 
 ```
 CENTRALISED_LOGGING/
-├── documents/
-│   ├── arch.md
-│   ├── installation.md
-│   ├── nats.md
-│   └── vector.md
 ├── tools/
 │   ├── loki-linux-amd64.zip
 │   ├── nats-0.2.2-amd64.deb
