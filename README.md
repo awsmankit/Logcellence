@@ -48,7 +48,6 @@ mv loki-linux-amd64 ../loki
 | **Vector**        | Collects/transforms `.log` files and forwards to Loki & NATS    |
 | **Loki**          | Log database queried by Grafana and FastAPI                     |
 | **Grafana**       | Dashboards and real-time log visualizations                     |
-| **Fluent Bit**    | Lightweight log shipping agent for tailing system/service logs  |
 | **NATS**          | Lightweight messaging bus between Vector → FastAPI              |
 | **FastAPI**       | Consumes logs via NATS, summarizes with GPT, and pushes to Loki |
 | **Azure OpenAI**  | GPT model generates natural language log summaries              |
@@ -66,7 +65,7 @@ mv loki-linux-amd64 ../loki
                                     |                        |
                                     v                        v
                                 +--------+         +----------------+
-                                |  NATS  |-------> |   FastAPI App  |
+                                |  NATS  |-------> |   FastAPI App  |  
                                 +--------+         | (GPT Summary)  |
                                                    +----------------+
                                                            |
@@ -131,18 +130,8 @@ curl http://localhost:3100/ready
 
 ---
 
-### 🔹 2. Install Fluent Bit
 
-```bash
-sudo apt install fluent-bit
-sudo fluent-bit -c fluent-bit.conf
-```
-
-Make sure your `fluent-bit.conf` outputs to Loki at `http://localhost:3100`.
-
----
-
-### 🔹 3. Install Grafana
+### 🔹 2. Install Grafana
 
 ```bash
 sudo apt install -y apt-transport-https software-properties-common
